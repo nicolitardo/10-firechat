@@ -22,7 +22,11 @@ export class ChatService {
         return;
       }
       this.usuario.nombre = user.displayName;
+      if ( user.displayName === null) {
+        this.usuario.nombre = 'NN';
+      }
       this.usuario.uid = user.uid;
+      this.usuario.color = this.color();
     });
   }
 
@@ -61,14 +65,33 @@ export class ChatService {
   }
 
   agregarMensaje( texto: string ) {
-    // Falta el UID del usuario
     const mensaje: Mensaje = {
       nombre: this.usuario.nombre,
       mensaje: texto,
       fecha: new Date().getTime(),
-      uid: this.usuario.uid
+      uid: this.usuario.uid,
+      color: this.usuario.color
     };
 
     return this.itemsCollection.add( mensaje );
   }
+
+  color(){
+    const hexadecimal = new Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
+    let color_aleatorio = '#';
+    for ( let i = 0; i < 6; i++){
+       const posarray = this.aleatorio( 0, hexadecimal.length );
+       color_aleatorio += hexadecimal[posarray];
+    }
+    return color_aleatorio;
+ }
+
+  aleatorio( inferior, superior ){
+    const numPosibilidades = superior - inferior;
+    let aleat = Math.random() * numPosibilidades;
+    aleat = Math.floor(aleat);
+    // tslint:disable-next-line: radix
+    return parseInt( inferior ) + aleat;
+  }
+
 }
